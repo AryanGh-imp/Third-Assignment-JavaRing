@@ -1,17 +1,19 @@
 package org.project.object.armors;
 
-// TODO: UPDATE IMPLEMENTATION
 public abstract class Armor {
     private int defense;
-    private int maxDefense;
+    private final int maxDefense;
     private int durability;
-    private int maxDurability;
+    private final int maxDurability;
 
     private boolean isBroke;
 
     public Armor(int defense, int durability) {
+        this.maxDefense = defense;
         this.defense = defense;
+        this.maxDurability = durability;
         this.durability = durability;
+        this.isBroke = false;
     }
 
     public void checkBreak() {
@@ -21,11 +23,19 @@ public abstract class Armor {
         }
     }
 
-    // TODO: (BONUS) UPDATE THE REPAIR METHOD
     public void repair() {
-        isBroke = false;
-        defense = maxDefense;
-        durability = maxDurability;
+        if (isBroke) {
+            isBroke = false;
+            defense = maxDefense;
+            durability = maxDurability;
+            System.out.println("Armor repaired! Defense and durability restored.");
+        }
+    }
+
+    // Reduced armor durability after taking damage.
+    public void reduceDurability(int damage) {
+        durability -= damage;
+        checkBreak();
     }
 
     public int getDefense() {
@@ -38,5 +48,14 @@ public abstract class Armor {
 
     public boolean isBroke() {
         return isBroke;
+    }
+
+    // Get methods to get maximum defense and durability values
+    public int getMaxDefense() {
+        return maxDefense;
+    }
+
+    public int getMaxDurability() {
+        return maxDurability;
     }
 }
