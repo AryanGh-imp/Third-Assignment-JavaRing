@@ -15,7 +15,11 @@ public interface Entity {
 
     int getMaxMP();
 
-    /*
-    TODO: ADD OTHER REQUIRED AND BONUS METHODS
-    */
+    String getName();
+
+    boolean isAlive();
+
+    int getCurrentHP();
+
+    int getCurrentMP();
 }
