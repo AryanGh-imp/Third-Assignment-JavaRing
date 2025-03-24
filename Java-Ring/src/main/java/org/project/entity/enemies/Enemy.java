@@ -10,6 +10,7 @@ public abstract class Enemy implements Entity {
     protected int maxHP;
     protected int mp;
     protected int maxMP;
+    private final int initialHP;
 
     public Enemy(String name, int hp, int mp, Weapon weapon) {
         this.name = name;
@@ -18,6 +19,7 @@ public abstract class Enemy implements Entity {
         this.mp = mp;
         this.maxMP = mp;
         this.weapon = weapon;
+        this.initialHP = hp;
     }
 
     @Override
@@ -34,6 +36,11 @@ public abstract class Enemy implements Entity {
             hp = 0;
         }
         System.out.println(name + " takes " + actualDamage + " damage! HP left: " + hp);
+    }
+
+    public void restoreHealth() {
+        this.hp = initialHP;
+        System.out.println("Enemy has restored to full health: " + initialHP);
     }
 
     @Override

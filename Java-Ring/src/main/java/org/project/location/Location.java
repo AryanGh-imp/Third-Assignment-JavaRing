@@ -10,24 +10,41 @@ public class Location {
     private ArrayList<Location> locations;
     private ArrayList<Enemy> enemies;
 
-    public Location(ArrayList<Location> locations, ArrayList<Enemy> enemies) {
-        this.locations = locations;
-        this.enemies = enemies;
+    public Location(String name, ArrayList<Location> locations, ArrayList<Enemy> enemies) {
+        this.name = name;
+        this.locations = new ArrayList<>(locations);
+        this.enemies = new ArrayList<>(enemies);
     }
 
-    /*
-    TODO: (BONUS) RESET EACH LOCATION AFTER PLAYER LEAVES
-    */
-
+    // دریافت نام موقعیت
     public String getName() {
         return name;
     }
 
     public ArrayList<Location> getLocations() {
-        return locations;
+        return new ArrayList<>(locations);
     }
 
     public ArrayList<Enemy> getEnemies() {
-        return enemies;
+        return new ArrayList<>(enemies);
+    }
+
+    public void addEnemy(Enemy enemy) {
+        enemies.add(enemy);
+    }
+
+    public void removeEnemy(Enemy enemy) {
+        enemies.remove(enemy);
+    }
+
+    public void addLocation(Location location) {
+        locations.add(location);
+    }
+
+    public void resetLocation() {
+        System.out.println("Resetting location: " + name);
+        for (Enemy enemy : enemies) {
+            enemy.restoreHealth();
+        }
     }
 }
