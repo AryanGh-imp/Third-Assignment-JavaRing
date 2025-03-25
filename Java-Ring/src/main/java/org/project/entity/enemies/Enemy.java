@@ -11,6 +11,7 @@ public abstract class Enemy implements Entity {
     protected int mp;
     protected int maxMP;
     private final int initialHP;
+    private boolean isDefending = false;
 
     public Enemy(String name, int hp, int mp, Weapon weapon) {
         this.name = name;
@@ -30,8 +31,10 @@ public abstract class Enemy implements Entity {
 
     @Override
     public void takeDamage(int damage) {
-        int actualDamage = Math.max(damage, 0);
+        int actualDamage = isDefending ? damage / 2 : damage;
+        actualDamage = Math.max(actualDamage, 0);
         hp -= actualDamage;
+        isDefending = false; // Defense resets after taking damage
         if (hp < 0) {
             hp = 0;
         }
@@ -63,9 +66,9 @@ public abstract class Enemy implements Entity {
 
     @Override
     public void defend() {
-        System.out.println(name + " tries to defend, but it's not very effective!");
+        isDefending = true;
+        System.out.println(name + " braces for an attack, reducing incoming damage!");
     }
-
 
     @Override
     public String getName() {

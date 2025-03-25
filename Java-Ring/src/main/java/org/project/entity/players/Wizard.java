@@ -5,20 +5,21 @@ import org.project.object.weapons.Weapon;
 import org.project.object.armors.Armor;
 
 public class Wizard extends Player {
-    private final int spellManaCost = 20;
-    private final int spellDamage = 30;
-    private final int healAmount = 15;
+    public static final int SPELL_MANA_COST = 20;
+    public static final int SPELL_DAMAGE = 30;
+    public static final int HEAL_AMOUNT = 15;
 
     public Wizard(String name, int hp, int mp, Weapon weapon, Armor armor) {
         super(name, hp, mp, weapon, armor);
     }
 
     public void magicStrike(Entity target) {
-        if (getCurrentMP() >= spellManaCost) {
-            target.takeDamage(spellDamage);
-            heal(healAmount);
-            fillMana(-spellManaCost);
-            System.out.println(getName() + " casts Magic Strike! Deals " + spellDamage + " damage and heals " + healAmount + " HP.");
+        if (getCurrentMP() >= SPELL_MANA_COST) {
+            target.takeDamage(SPELL_DAMAGE);
+            heal(HEAL_AMOUNT);
+            fillMana(-SPELL_MANA_COST);
+            System.out.println(getName() + " casts Magic Strike! Deals " + SPELL_DAMAGE +
+                    " damage and heals " + HEAL_AMOUNT + " HP.");
         } else {
             System.out.println(getName() + " doesn't have enough mana!");
         }

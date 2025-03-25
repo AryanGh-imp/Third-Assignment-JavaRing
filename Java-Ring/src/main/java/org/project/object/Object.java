@@ -7,7 +7,4 @@ public interface Object {
 
     String getName();
 
-    String getDescription();
-
-    boolean isUsable();
 }

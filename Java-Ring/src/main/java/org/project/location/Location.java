@@ -3,48 +3,52 @@ package org.project.location;
 import org.project.entity.enemies.Enemy;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Location {
-    private String name;
+    private final String name;
+    private final List<Location> connectedLocations;
+    private final List<Enemy> enemies;
 
-    private ArrayList<Location> locations;
-    private ArrayList<Enemy> enemies;
-
-    public Location(String name, ArrayList<Location> locations, ArrayList<Enemy> enemies) {
+    public Location(String name) {
         this.name = name;
-        this.locations = new ArrayList<>(locations);
-        this.enemies = new ArrayList<>(enemies);
+        this.connectedLocations = new ArrayList<>();
+        this.enemies = new ArrayList<>();
     }
 
-    // دریافت نام موقعیت
+    public void connectTo(Location other) {
+        if (!this.connectedLocations.contains(other)) {
+            this.connectedLocations.add(other);
+            other.connectedLocations.add(this);
+        }
+    }
+
+    public void addEnemy(Enemy enemy) {
+        this.enemies.add(enemy);
+    }
+
+    public void removeEnemy(Enemy enemy) {
+        this.enemies.remove(enemy);
+    }
+
     public String getName() {
         return name;
     }
 
-    public ArrayList<Location> getLocations() {
-        return new ArrayList<>(locations);
+    public List<Location> getConnectedLocations() {
+        return Collections.unmodifiableList(connectedLocations);
     }
 
-    public ArrayList<Enemy> getEnemies() {
-        return new ArrayList<>(enemies);
+    public List<Enemy> getEnemies() {
+        return Collections.unmodifiableList(enemies);
     }
 
-    public void addEnemy(Enemy enemy) {
-        enemies.add(enemy);
+    public void reset() {
+        enemies.forEach(Enemy::restoreHealth);
     }
 
-    public void removeEnemy(Enemy enemy) {
-        enemies.remove(enemy);
-    }
-
-    public void addLocation(Location location) {
-        locations.add(location);
-    }
-
-    public void resetLocation() {
-        System.out.println("Resetting location: " + name);
-        for (Enemy enemy : enemies) {
-            enemy.restoreHealth();
-        }
+    public boolean isCleared() {
+        return enemies.stream().noneMatch(Enemy::isAlive);
     }
 }

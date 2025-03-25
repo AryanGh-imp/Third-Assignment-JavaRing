@@ -1,14 +1,17 @@
 package org.project.object.armors;
 
+import org.project.entity.Entity;
+
 public abstract class Armor {
+    private final String name;
     private int defense;
     private final int maxDefense;
     private int durability;
     private final int maxDurability;
-
     private boolean isBroke;
 
-    public Armor(int defense, int durability) {
+    public Armor(String name, int defense, int durability) {
+        this.name = name;
         this.maxDefense = defense;
         this.defense = defense;
         this.maxDurability = durability;
@@ -20,15 +23,6 @@ public abstract class Armor {
         if (durability <= 0) {
             isBroke = true;
             defense = 0;
-        }
-    }
-
-    public void repair() {
-        if (isBroke) {
-            isBroke = false;
-            defense = maxDefense;
-            durability = maxDurability;
-            System.out.println("Armor repaired! Defense and durability restored.");
         }
     }
 
@@ -58,4 +52,10 @@ public abstract class Armor {
     public int getMaxDurability() {
         return maxDurability;
     }
+
+    public String getName(){
+        return name;
+    }
+
+    public abstract void use(Entity target);
 }

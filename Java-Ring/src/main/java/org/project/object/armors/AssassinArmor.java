@@ -4,16 +4,16 @@ package org.project.object.armors;
 import org.project.entity.Entity;
 import org.project.entity.players.Player;
 
-public class KnightArmor extends Armor {
+public class AssassinArmor extends Armor {
 
-    public KnightArmor() {
-        super("KnightArmor", 15, 50);
+    public AssassinArmor() {
+        super("Assassin", 10, 75);
     }
 
     public void checkBreak() {
         super.checkBreak();
         if (isBroke()) {
-            System.out.println("Knight's armor is broken!");
+            System.out.println("AssassinArmor's armor is broken!");
         }
     }
 
@@ -21,7 +21,7 @@ public class KnightArmor extends Armor {
     public void use(Entity target) {
         if (target instanceof Player) {
             ((Player) target).setArmor(this);
-            System.out.println("You have equipped Knight Armor.");
+            System.out.println("You have equipped AssassinArmor Armor.");
         } else {
             System.out.println("INVALID!");
         }
@@ -29,7 +29,7 @@ public class KnightArmor extends Armor {
 
     @Override
     public String toString() {
-        return "Knight Armor (Defense: " + getDefense() + ", Durability: " + getDurability() + ")";
+        return "AssassinArmor Armor (Defense: " + getDefense() + ", Durability: " + getDurability() + ")";
     }
 
 }

@@ -1,10 +1,9 @@
 package org.project.object.consumables;
 
-import org.project.object.Object;
 import org.project.entity.Entity;
+import org.project.object.Object;
 
 public abstract class Consumable implements Object {
-
     private final String name;
     private final String description;
     private int quantity;
@@ -12,7 +11,7 @@ public abstract class Consumable implements Object {
     public Consumable(String name, String description, int quantity) {
         this.name = name;
         this.description = description;
-        this.quantity = Math.max(quantity, 0);
+        this.quantity = Math.max(quantity, 0); // Ensure quantity is never negative
     }
 
     @Override
@@ -26,7 +25,6 @@ public abstract class Consumable implements Object {
         }
     }
 
-    // a method that is implemented in subclasses
     protected abstract void applyEffect(Entity target);
 
     public String getName() {
@@ -43,6 +41,9 @@ public abstract class Consumable implements Object {
 
     public void addQuantity(int amount) {
         this.quantity += amount;
+        if (this.quantity < 0) {
+            this.quantity = 0;
+        }
     }
 
     @Override

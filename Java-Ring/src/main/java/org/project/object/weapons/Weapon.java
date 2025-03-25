@@ -5,17 +5,15 @@ import org.project.object.Object;
 
 public abstract class Weapon implements Object {
     private final String name;
-    private final String description;
     private int damage;
     private final int manaCost;
     private final String type;
 
-    public Weapon(String name, String description, int damage, int manaCost, String type) {
+    public Weapon(String name, int damage, int manaCost, String type) {
         if (damage < 0 || manaCost < 0) {
             throw new IllegalArgumentException("Damage and mana cost must be non-negative.");
         }
         this.name = name;
-        this.description = description;
         this.damage = damage;
         this.manaCost = manaCost;
         this.type = type;
@@ -35,15 +33,6 @@ public abstract class Weapon implements Object {
         return name;
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public boolean isUsable() {
-        return true;
-    }
 
     public int getDamage() {
         return damage;
