@@ -7,7 +7,7 @@ import org.project.entity.players.Player;
 public class WizardArmor extends Armor {
 
     public WizardArmor() {
-        super("WizardArmor", 5, 100);
+        super("WizardArmor", 3, 100);
     }
 
     public void checkBreak() {

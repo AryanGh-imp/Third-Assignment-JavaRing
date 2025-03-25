@@ -7,7 +7,7 @@ import org.project.entity.players.Player;
 public class AssassinArmor extends Armor {
 
     public AssassinArmor() {
-        super("Assassin", 10, 75);
+        super("Assassin", 5, 75);
     }
 
     public void checkBreak() {

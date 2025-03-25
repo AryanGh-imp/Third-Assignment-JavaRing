@@ -1,5 +1,6 @@
 package org.project.entity.enemies;
 
+import org.project.ANSI;
 import org.project.object.weapons.Weapon;
 
 public class Skeleton extends Enemy {
@@ -19,7 +20,10 @@ public class Skeleton extends Enemy {
 
     private void resurrect() {
         resurrected = true;
-        hp = maxHP / 2; // return with %50 HP
-        System.out.println(name + " rises from the dead with " + hp + " HP!");
+        hp = maxHP / 2;
+        System.out.println(ANSI.MAGENTA + ANSI.BOLD + "\n" + name
+                + " RISES FROM THE DEAD!" + ANSI.RESET);
+        System.out.println(ANSI.MAGENTA + "☠️ " + name + " returns with "
+                + ANSI.YELLOW+ ANSI.BOLD + hp + ANSI.RESET + ANSI.MAGENTA + " HP! ☠️" + ANSI.RESET);
     }
 }

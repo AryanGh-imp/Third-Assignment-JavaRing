@@ -1,5 +1,6 @@
 package org.project.entity.enemies;
 
+import org.project.ANSI;
 import org.project.entity.Entity;
 import org.project.object.weapons.Weapon;
 
@@ -25,7 +26,9 @@ public abstract class Enemy implements Entity {
 
     @Override
     public void attack(Entity target) {
-        System.out.println(name + " attacks " + target.getName() + " with " + weapon.getName() + "!");
+        System.out.println(ANSI.YELLOW + name + ANSI.RESET + " attacks "
+                + ANSI.CYAN + target.getName() + ANSI.RESET + " with "
+                + ANSI.BLUE + weapon.getName() + ANSI.RESET + "!");
         target.takeDamage(weapon.getDamage());
     }
 
@@ -34,16 +37,21 @@ public abstract class Enemy implements Entity {
         int actualDamage = isDefending ? damage / 2 : damage;
         actualDamage = Math.max(actualDamage, 0);
         hp -= actualDamage;
-        isDefending = false; // Defense resets after taking damage
+        isDefending = false;
+
         if (hp < 0) {
             hp = 0;
         }
-        System.out.println(name + " takes " + actualDamage + " damage! HP left: " + hp);
+
+        System.out.println(ANSI.YELLOW + name + ANSI.RESET + " takes "
+                + ANSI.RED + ANSI.BOLD + actualDamage + ANSI.RESET + " damage! "
+                + ANSI.GREEN + "HP left: " + hp + ANSI.RESET);
     }
 
     public void restoreHealth() {
         this.hp = initialHP;
-        System.out.println("Enemy has restored to full health: " + initialHP);
+        System.out.println(ANSI.GREEN + ANSI.BOLD + name + " has been fully restored to "
+                + initialHP + " HP!" + ANSI.RESET);
     }
 
     @Override
@@ -52,7 +60,9 @@ public abstract class Enemy implements Entity {
         if (hp > maxHP) {
             hp = maxHP;
         }
-        System.out.println(name + " heals for " + health + " HP. Current HP: " + hp);
+        System.out.println(ANSI.GREEN + name + " heals for " + ANSI.GREEN + ANSI.BOLD
+                + health + ANSI.RESET + ANSI.GREEN + " HP. " + ANSI.YELLOW + "Current HP: "
+                + hp + "/" + maxHP + ANSI.RESET);
     }
 
     @Override
@@ -107,5 +117,13 @@ public abstract class Enemy implements Entity {
     public void setWeapon(Weapon newWeapon) {
         this.weapon = newWeapon;
         System.out.println(name + " equips " + newWeapon.getName() + "!");
+    }
+
+    public boolean isDefending() {
+        return isDefending;
+    }
+
+    public void setDefending(boolean isDefending) {
+        this.isDefending = isDefending;
     }
 }

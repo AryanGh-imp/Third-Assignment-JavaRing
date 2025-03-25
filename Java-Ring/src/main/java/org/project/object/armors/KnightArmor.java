@@ -7,7 +7,7 @@ import org.project.entity.players.Player;
 public class KnightArmor extends Armor {
 
     public KnightArmor() {
-        super("KnightArmor", 15, 50);
+        super("KnightArmor", 7, 50);
     }
 
     public void checkBreak() {

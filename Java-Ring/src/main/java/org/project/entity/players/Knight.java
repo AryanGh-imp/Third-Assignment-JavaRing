@@ -1,5 +1,6 @@
 package org.project.entity.players;
 
+import org.project.ANSI;
 import org.project.entity.Entity;
 import org.project.object.weapons.Weapon;
 import org.project.object.armors.Armor;
@@ -19,12 +20,16 @@ public class Knight extends Player {
             target.takeDamage(KICK_DAMAGE);
             roundsSinceLastKick = 0;
             fillMana(-KICK_COST);
-            System.out.println(getName() + " performs a Strong Kick! Deals " + KICK_DAMAGE + " damage.");
+            System.out.println(ANSI.RED + ANSI.BOLD + getName()
+                    + " performs a MIGHTY STRONG KICK!" + ANSI.RESET);
+            System.out.println(ANSI.RED + "💥 Deals " + ANSI.BOLD + KICK_DAMAGE
+                    + ANSI.RESET + ANSI.RED + " crushing damage! 💥" + ANSI.RESET);
         } else if (getCurrentMP() < KICK_COST) {
-            System.out.println(getName() + " doesn't have enough mana for a Strong Kick!");
+            System.out.println(ANSI.RED + getName()
+                    + " doesn't have enough mana for a Strong Kick!" + ANSI.RESET);
         } else {
-            System.out.println(getName() + " can't use Strong Kick yet! (" +
-                    (KICK_COOLDOWN - roundsSinceLastKick) + " rounds left)");
+            System.out.println(ANSI.YELLOW + getName() + " can't use Strong Kick yet! ("
+                    + (KICK_COOLDOWN - roundsSinceLastKick) + " rounds left)" + ANSI.RESET);
         }
     }
 

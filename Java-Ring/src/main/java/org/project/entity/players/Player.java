@@ -3,6 +3,7 @@ package org.project.entity.players;
 import org.project.entity.Entity;
 import org.project.object.armors.Armor;
 import org.project.object.weapons.Weapon;
+import org.project.ANSI;
 
 public abstract class Player implements Entity {
     protected String name;
@@ -12,6 +13,7 @@ public abstract class Player implements Entity {
     private final int maxHP;
     private int mp;
     private final int maxMP;
+    private boolean isDefending = false;
 
     public Player(String name, int hp, int mp, Weapon weapon, Armor armor) {
         this.name = name;
@@ -25,24 +27,40 @@ public abstract class Player implements Entity {
 
     @Override
     public void attack(Entity target) {
-        System.out.println(name + " attacks " + target.getName() + " with " + weapon.getName() + "!");
+        System.out.println(ANSI.BLUE + name + ANSI.RESET + " attacks "
+                + ANSI.YELLOW + target.getName() + ANSI.RESET + " with "
+                + ANSI.CYAN + weapon.getName() + ANSI.RESET + "!");
         target.takeDamage(weapon.getDamage());
     }
 
     @Override
     public void defend() {
-        int defense = armor.getDefense();
-        System.out.println(name + " raises " + armor.getName() + " to defend! Defense: " + defense);
+        isDefending = true;
+        System.out.println(ANSI.BLUE + name + " raises " + armor.getName() +
+                " to defend! Damage will be reduced by 50% next attack." + ANSI.RESET);
+    }
+
+    public boolean isDefending() {
+        return isDefending;
+    }
+
+    public void setDefending(boolean isDefending) {
+        this.isDefending = isDefending;
     }
 
     @Override
     public void takeDamage(int damage) {
         int reducedDamage = Math.max(damage - armor.getDefense(), 0);
-        hp -= reducedDamage;
-        if (hp < 0) {
-            hp = 0;
+        if (isDefending) {
+            reducedDamage /= 2;
+            System.out.println(ANSI.BLUE + "Defense reduced damage from " +
+                    (damage - armor.getDefense()) + " to " + reducedDamage + ANSI.RESET);
+            isDefending = false;
         }
-        System.out.println(name + " takes " + reducedDamage + " damage! HP left: " + hp);
+        hp -= reducedDamage;
+        if (hp < 0) hp = 0;
+        System.out.println(ANSI.RED + name + " takes " + reducedDamage +
+                " damage! HP: " + hp + "/" + maxHP + ANSI.RESET);
     }
 
     @Override

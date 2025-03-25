@@ -20,9 +20,13 @@ public class Main {
     private static List<Consumable> inventory;
 
     public static void main(String[] args) {
-        initializeGame();
-        gameLoop();
-        endGame();
+        try {
+            initializeGame();
+            gameLoop();
+            endGame();
+        } finally {
+            scanner.close();
+        }
     }
 
     private static void initializeGame() {
@@ -52,9 +56,9 @@ public class Main {
 
         // Armor selection
         System.out.println("\nChoose your armor:");
-        System.out.println("1. " + ANSI.CYAN + "Knight Armor " + ANSI.RESET + "(Defense: 15, Durability: 50)");
-        System.out.println("2. " + ANSI.YELLOW + "Wizard Armor " + ANSI.RESET + "(Defense: 5, Durability: 100)");
-        System.out.println("3. " + ANSI.RED + "Assassin Armor " + ANSI.RESET + "(Defense: 15, Durability: 75)");
+        System.out.println("1. " + ANSI.CYAN + "Knight Armor " + ANSI.RESET + "(Defense: 7, Durability: 50)");
+        System.out.println("2. " + ANSI.YELLOW + "Wizard Armor " + ANSI.RESET + "(Defense: 3, Durability: 100)");
+        System.out.println("3. " + ANSI.RED + "Assassin Armor " + ANSI.RESET + "(Defense: 5, Durability: 75)");
 
         int armorChoice = getUserChoice(3);
         Armor chosenArmor = createArmor(armorChoice);
@@ -197,23 +201,46 @@ public class Main {
         boolean fled = false;
 
         while (player.isAlive() && enemy.isAlive() && !fled) {
-            System.out.println("\n" + ANSI.BLUE + player.getName() + ANSI.RESET +
-                    " HP: " + ANSI.RED + player.getCurrentHP() + ANSI.RESET + "/" + player.getMaxHP() +
-                    " MP: " + ANSI.CYAN + player.getCurrentMP() + ANSI.RESET + "/" + player.getMaxMP() +
-                    " | " + ANSI.YELLOW + enemy.getName() + ANSI.RESET +
-                    " HP: " + ANSI.RED + enemy.getCurrentHP() + ANSI.RESET + "/" + enemy.getMaxHP());
-
+            displayBattleStatus(player, enemy);
             int action = chooseBattleAction();
 
             switch (action) {
-                case 1 -> handleAttack(player, enemy);
-                case 2 -> player.defend();
-                case 3 -> handleSpecialAction(player, enemy);
+                case 1 -> {
+                    // If the player was defending, disable defense mode.
+                    if (player.isDefending()) {
+                        System.out.println(ANSI.YELLOW + player.getName() +
+                                " stops defending to attack!" + ANSI.RESET);
+                        player.setDefending(false);
+                    }
+                    handleAttack(player, enemy);
+                }
+                case 2 -> {
+                    player.defend();
+                }
+                case 3 -> {
+                    // If the player was defending, disable defense mode.
+                    if (player.isDefending()) {
+                        System.out.println(ANSI.YELLOW + player.getName() +
+                                " stops defending to use special action!" + ANSI.RESET);
+                        player.setDefending(false);
+                    }
+                    handleSpecialAction(player, enemy);
+                }
                 case 4 -> fled = handleFlee(player, enemy);
                 case 5 -> useItem();
             }
 
             if (enemy.isAlive() && !fled) {
+                // Enemy decides to defend (30% chance)
+                if (random.nextDouble() < 0.3) {
+                    enemy.defend();
+                } else {
+                    // If the enemy had defended and now decided to attack
+                    if (enemy.isDefending()) {
+                        enemy.setDefending(false);
+                    }
+                }
+
                 enemyTurn(enemy, player);
             }
 
@@ -224,12 +251,32 @@ public class Main {
     }
 
     private static int chooseBattleAction() {
-        System.out.println("\nChoose an action:");
-        System.out.println("1. Attack");
-        System.out.println("2. Defend");
-        System.out.println("3. Special Action");
-        System.out.println("4. Try to Flee");
-        System.out.println("5. Use Item");
+        System.out.println("\n" + ANSI.BLUE + "CHOOSE ACTION:" + ANSI.RESET);
+        System.out.println("1. " + ANSI.CYAN + "Basic Attack" + ANSI.RESET);
+        System.out.println("2. " + ANSI.BLUE + "Defend" + ANSI.RESET);
+
+        if (player instanceof Knight) {
+            System.out.println("3. " + ANSI.RED + "Strong Kick" + ANSI.RESET +
+                    (((Knight)player).getRoundsSinceLastKick() >= ((Knight)player).getKickCooldown() ?
+                            ANSI.GREEN + " (Ready)" + ANSI.RESET :
+                            ANSI.RED + " (Cooldown)" + ANSI.RESET));
+        }
+        else if (player instanceof Wizard) {
+            System.out.println("3. " + ANSI.MAGENTA + "Magic Strike" + ANSI.RESET +
+                    (player.getCurrentMP() >= 20 ?
+                            ANSI.GREEN + " (Ready)" + ANSI.RESET :
+                            ANSI.RED + " (Not enough MP)" + ANSI.RESET));
+        }
+        else if (player instanceof Assassin) {
+            System.out.println("3. " + ANSI.YELLOW + "Stealth" + ANSI.RESET +
+                    (((Assassin)player).isInvisible() ?
+                            ANSI.GREEN + " (Active)" + ANSI.RESET :
+                            ANSI.YELLOW + " (Ready)" + ANSI.RESET));
+        }
+
+        System.out.println("4. " + ANSI.YELLOW + "Try to Flee" + ANSI.RESET);
+        System.out.println("5. " + ANSI.GREEN + "Use Item" + ANSI.RESET);
+
         return getUserChoice(5);
     }
 
@@ -273,7 +320,9 @@ public class Main {
 
         System.out.println("\nInventory:");
         for (int i = 0; i < inventory.size(); i++) {
-            System.out.println((i + 1) + ". " + inventory.get(i));
+            Consumable item = inventory.get(i);
+            System.out.println((i + 1) + ". " + item.getName() +
+                    " (" + item.getDescription() + ") x" + item.getQuantity());
         }
         System.out.println((inventory.size() + 1) + ". Cancel");
 
@@ -285,30 +334,39 @@ public class Main {
             return;
         }
 
-        try {
-            Consumable item = inventory.get(choice);
-            if (item.getQuantity() <= 0) {
-                System.out.println(ANSI.RED + "This item is out of stock!" + ANSI.RESET);
-                inventory.remove(choice);
-                return;
-            }
+        Consumable item = inventory.get(choice);
+        if (item.getQuantity() <= 0) {
+            System.out.println(ANSI.RED + "This item is out of stock!" + ANSI.RESET);
+            inventory.remove(choice);
+            return;
+        }
 
-            item.use(player);
-            if (item.getQuantity() <= 0) {
-                inventory.remove(choice);
-            }
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println(ANSI.RED + "Invalid item selection!" + ANSI.RESET);
+        item.use(player);
+        if (item.getQuantity() <= 0) {
+            inventory.remove(choice);
         }
     }
 
     private static void enemyTurn(Enemy enemy, Player player) {
+        System.out.println(ANSI.RED + "\n" + enemy.getName() + "'s turn!" + ANSI.RESET);
+
+        if (enemy.isDefending()) {
+            System.out.println(ANSI.YELLOW + enemy.getName() + " is defending!" + ANSI.RESET);
+        }
+
         if (enemy instanceof Dragon && random.nextDouble() < 0.3) {
+            System.out.println(ANSI.RED + enemy.getName() + " uses a fiery breath attack!" + ANSI.RESET);
             ((Dragon) enemy).attackAll(List.of(player));
-        } else if (enemy instanceof Skeleton && ((Skeleton) enemy).getCurrentHP() < enemy.getMaxHP() / 2 && random.nextDouble() < 0.4) {
+        }
+        else if (enemy instanceof Skeleton && enemy.getCurrentHP() < enemy.getMaxHP() / 2 && random.nextDouble() < 0.4) {
+            System.out.println(ANSI.GREEN + enemy.getName() + " heals itself!" + ANSI.RESET);
             enemy.heal(10);
-        } else {
-            enemy.attack(player);
+        }
+        else {
+            int damage = enemy.getWeapon().getDamage();
+            System.out.println(ANSI.RED + enemy.getName() + " attacks with " + enemy.getWeapon().getName() +
+                    " for " + damage + " damage!" + ANSI.RESET);
+            player.takeDamage(damage);
         }
     }
 
@@ -342,12 +400,32 @@ public class Main {
         }
     }
 
-    private static class ANSI {
-        public static final String RESET = "\u001B[0m";
-        public static final String RED = "\u001B[31m";
-        public static final String GREEN = "\u001B[32m";
-        public static final String YELLOW = "\u001B[33m";
-        public static final String BLUE = "\u001B[34m";
-        public static final String CYAN = "\u001B[36m";
+    private static void displayBattleStatus(Player player, Enemy enemy) {
+        System.out.println("\n" + ANSI.BLUE + "=== BATTLE STATUS ===" + ANSI.RESET);
+        System.out.println(ANSI.BLUE + player.getName() + ANSI.RESET +
+                " HP: " + ANSI.RED + player.getCurrentHP() + ANSI.RESET + "/" + player.getMaxHP() +
+                " MP: " + ANSI.CYAN + player.getCurrentMP() + ANSI.RESET + "/" + player.getMaxMP());
+
+        if (player instanceof Knight knight) {
+            System.out.println("Special: Strong Kick - " +
+                    (knight.getRoundsSinceLastKick() >= knight.getKickCooldown() ?
+                            ANSI.GREEN + "READY" + ANSI.RESET :
+                            ANSI.RED + "Cooldown: " + (knight.getKickCooldown() - knight.getRoundsSinceLastKick()) + " turns" + ANSI.RESET));
+        }
+        else if (player instanceof Wizard wizard) {
+            System.out.println("Special: Magic Strike - " +
+                    (player.getCurrentMP() >= 20 ?
+                            ANSI.GREEN + "READY (Cost: 20 MP)" + ANSI.RESET :
+                            ANSI.RED + "NOT ENOUGH MP" + ANSI.RESET));
+        }
+        else if (player instanceof Assassin assassin) {
+            System.out.println("Special: Stealth - " +
+                    (assassin.isInvisible() ?
+                            ANSI.GREEN + "ACTIVE" + ANSI.RESET :
+                            ANSI.YELLOW + "READY" + ANSI.RESET));
+        }
+
+        System.out.println(ANSI.YELLOW + enemy.getName() + ANSI.RESET +
+                " HP: " + ANSI.RED + enemy.getCurrentHP() + ANSI.RESET + "/" + enemy.getMaxHP());
     }
 }
