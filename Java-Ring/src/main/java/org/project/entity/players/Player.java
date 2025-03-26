@@ -53,14 +53,25 @@ public abstract class Player implements Entity {
         int reducedDamage = Math.max(damage - armor.getDefense(), 0);
         if (isDefending) {
             reducedDamage /= 2;
-            System.out.println(ANSI.BLUE + "Defense reduced damage from " +
-                    (damage - armor.getDefense()) + " to " + reducedDamage + ANSI.RESET);
-            isDefending = false;
+            System.out.println(ANSI.BLUE + "Defense reduced damage by 50%!" + ANSI.RESET);
         }
+
+        armor.reduceDurability(damage);
+
         hp -= reducedDamage;
         if (hp < 0) hp = 0;
+
         System.out.println(ANSI.RED + name + " takes " + reducedDamage +
                 " damage! HP: " + hp + "/" + maxHP + ANSI.RESET);
+        System.out.println("Armor durability: " + armor.getDurability() + "/" +
+                armor.getMaxDurability());
+
+        if (armor.isBroke()) {
+            System.out.println(ANSI.RED + ANSI.BOLD + "WARNING: " + armor.getName() +
+                    " has broken! Defense is now 0!" + ANSI.RESET);
+        }
+
+        isDefending = false;
     }
 
     @Override

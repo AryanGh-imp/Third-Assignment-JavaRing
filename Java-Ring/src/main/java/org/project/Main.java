@@ -148,6 +148,22 @@ public class Main {
         System.out.println("Name: " + player.getName());
         System.out.println("HP: " + player.getCurrentHP() + "/" + player.getMaxHP());
         System.out.println("MP: " + player.getCurrentMP() + "/" + player.getMaxMP());
+        System.out.println("Weapon: " + player.getWeapon().getName() +
+                " (Damage: " + player.getWeapon().getDamage() + ")");
+
+        if (player.getArmor().isBroke()) {
+            System.out.println("Armor: " + ANSI.RED + player.getArmor().getName() +
+                    " (BROKEN)" + ANSI.RESET);
+        } else {
+            System.out.println("Armor: " + player.getArmor().getName() +
+                    " (Defense: " + player.getArmor().getDefense() +
+                    ", Durability: " + player.getArmor().getDurability() + "/" +
+                    player.getArmor().getMaxDurability() + ")");
+        }
+
+        System.out.println("Name: " + player.getName());
+        System.out.println("HP: " + player.getCurrentHP() + "/" + player.getMaxHP());
+        System.out.println("MP: " + player.getCurrentMP() + "/" + player.getMaxMP());
         System.out.println("Weapon: " + player.getWeapon().getName() + " (Damage: " + player.getWeapon().getDamage() + ")");
         System.out.println("Armor: " + player.getArmor().getName() + " (Defense: " + player.getArmor().getDefense() + ")");
 
@@ -405,6 +421,15 @@ public class Main {
         System.out.println(ANSI.BLUE + player.getName() + ANSI.RESET +
                 " HP: " + ANSI.RED + player.getCurrentHP() + ANSI.RESET + "/" + player.getMaxHP() +
                 " MP: " + ANSI.CYAN + player.getCurrentMP() + ANSI.RESET + "/" + player.getMaxMP());
+
+        System.out.println("Armor: " + player.getArmor().getName() +
+                " (Defense: " + player.getArmor().getDefense() +
+                ", Durability: " + player.getArmor().getDurability() + "/" +
+                player.getArmor().getMaxDurability() + ")");
+
+        if (player.isDefending()) {
+            System.out.println(ANSI.BLUE + "Defense: " + ANSI.GREEN + "ACTIVE" + ANSI.RESET);
+        }
 
         if (player instanceof Knight knight) {
             System.out.println("Special: Strong Kick - " +

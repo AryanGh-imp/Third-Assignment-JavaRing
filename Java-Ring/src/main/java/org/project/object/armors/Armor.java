@@ -20,15 +20,17 @@ public abstract class Armor {
     }
 
     public void checkBreak() {
-        if (durability <= 0) {
-            isBroke = true;
+        if (isBroke()) {
             defense = 0;
         }
     }
 
     // Reduced armor durability after taking damage.
-    public void reduceDurability(int damage) {
-        durability -= damage;
+    public void reduceDurability(int amount) {
+        durability -= amount;
+        if (durability < 0) {
+            durability = 0;
+        }
         checkBreak();
     }
 
@@ -40,17 +42,10 @@ public abstract class Armor {
         return durability;
     }
 
+    public abstract int getMaxDurability();
+
     public boolean isBroke() {
-        return isBroke;
-    }
-
-    // Get methods to get maximum defense and durability values
-    public int getMaxDefense() {
-        return maxDefense;
-    }
-
-    public int getMaxDurability() {
-        return maxDurability;
+        return durability <= 0;
     }
 
     public String getName(){

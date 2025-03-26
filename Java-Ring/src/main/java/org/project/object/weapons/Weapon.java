@@ -5,7 +5,7 @@ import org.project.object.Object;
 
 public abstract class Weapon implements Object {
     private final String name;
-    private int damage;
+    private final int damage;
     private final int manaCost;
     private final String type;
 
@@ -36,21 +36,6 @@ public abstract class Weapon implements Object {
 
     public int getDamage() {
         return damage;
-    }
-
-    public int getManaCost() {
-        return manaCost;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void upgrade(int extraDamage) {
-        if (extraDamage > 0) {
-            this.damage += extraDamage;
-            System.out.println(name + " has been upgraded! New damage: " + this.damage);
-        }
     }
 
     @Override

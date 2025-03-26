@@ -32,4 +32,9 @@ public class AssassinArmor extends Armor {
         return "AssassinArmor Armor (Defense: " + getDefense() + ", Durability: " + getDurability() + ")";
     }
 
+    @Override
+    public int getMaxDurability() {
+        return 75;
+    }
+
 }

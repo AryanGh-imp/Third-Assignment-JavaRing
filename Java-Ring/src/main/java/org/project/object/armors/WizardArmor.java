@@ -32,4 +32,9 @@ public class WizardArmor extends Armor {
         return "Wizard Armor (Defense: " + getDefense() + ", Durability: " + getDurability() + ")";
     }
 
+    @Override
+    public int getMaxDurability() {
+        return 100;
+    }
+
 }
