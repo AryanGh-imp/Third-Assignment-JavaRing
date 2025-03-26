@@ -18,16 +18,6 @@ public class WizardArmor extends Armor {
     }
 
     @Override
-    public void use(Entity target) {
-        if (target instanceof Player) {
-            ((Player) target).setArmor(this);
-            System.out.println("You have equipped Wizard Armor.");
-        } else {
-            System.out.println("INVALID!");
-        }
-    }
-
-    @Override
     public String toString() {
         return "Wizard Armor (Defense: " + getDefense() + ", Durability: " + getDurability() + ")";
     }

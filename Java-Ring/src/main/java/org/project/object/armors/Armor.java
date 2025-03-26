@@ -5,14 +5,12 @@ import org.project.entity.Entity;
 public abstract class Armor {
     private final String name;
     private int defense;
-    private final int maxDefense;
     private int durability;
     private final int maxDurability;
     private boolean isBroke;
 
     public Armor(String name, int defense, int durability) {
         this.name = name;
-        this.maxDefense = defense;
         this.defense = defense;
         this.maxDurability = durability;
         this.durability = durability;
@@ -51,6 +49,4 @@ public abstract class Armor {
     public String getName(){
         return name;
     }
-
-    public abstract void use(Entity target);
 }

@@ -110,10 +110,6 @@ public class Main {
         Location cave = new Location("Cave");
         cave.addEnemy(dragon);
 
-        // Connecting locations
-        forest.connectTo(mountain);
-        mountain.connectTo(cave);
-
         locations.add(forest);
         locations.add(mountain);
         locations.add(cave);

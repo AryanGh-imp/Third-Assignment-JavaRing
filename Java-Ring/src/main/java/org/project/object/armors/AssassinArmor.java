@@ -18,16 +18,6 @@ public class AssassinArmor extends Armor {
     }
 
     @Override
-    public void use(Entity target) {
-        if (target instanceof Player) {
-            ((Player) target).setArmor(this);
-            System.out.println("You have equipped AssassinArmor Armor.");
-        } else {
-            System.out.println("INVALID!");
-        }
-    }
-
-    @Override
     public String toString() {
         return "AssassinArmor Armor (Defense: " + getDefense() + ", Durability: " + getDurability() + ")";
     }

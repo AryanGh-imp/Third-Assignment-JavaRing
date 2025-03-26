@@ -20,15 +20,6 @@ public class KnightArmor extends Armor {
     }
 
     @Override
-    public void use(Entity target) {
-        if (target instanceof Player) {
-            ((Player) target).setArmor(this);
-            System.out.println(ANSI.GREEN + "Equipped Knight Armor (Durability: " +
-                    getDurability() + "/" + getMaxDurability() + ")" + ANSI.RESET);
-        }
-    }
-
-    @Override
     public String toString() {
         return "Knight Armor (Defense: " + getDefense() + ", Durability: " + getDurability() + ")";
     }

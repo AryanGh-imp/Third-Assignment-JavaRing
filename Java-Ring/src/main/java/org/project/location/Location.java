@@ -8,20 +8,11 @@ import java.util.List;
 
 public class Location {
     private final String name;
-    private final List<Location> connectedLocations;
     private final List<Enemy> enemies;
 
     public Location(String name) {
         this.name = name;
-        this.connectedLocations = new ArrayList<>();
         this.enemies = new ArrayList<>();
-    }
-
-    public void connectTo(Location other) {
-        if (!this.connectedLocations.contains(other)) {
-            this.connectedLocations.add(other);
-            other.connectedLocations.add(this);
-        }
     }
 
     public void addEnemy(Enemy enemy) {
@@ -34,10 +25,6 @@ public class Location {
 
     public String getName() {
         return name;
-    }
-
-    public List<Location> getConnectedLocations() {
-        return Collections.unmodifiableList(connectedLocations);
     }
 
     public List<Enemy> getEnemies() {
