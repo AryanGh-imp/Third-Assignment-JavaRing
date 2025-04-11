@@ -3,40 +3,75 @@ package org.project.entity.players;
 import org.project.entity.Entity;
 import org.project.object.armors.Armor;
 import org.project.object.weapons.Weapon;
+import org.project.ANSI;
 
-// TODO: UPDATE IMPLEMENTATION
-public abstract class Player {
+public abstract class Player implements Entity {
     protected String name;
     Weapon weapon;
     Armor armor;
     private int hp;
-    private int maxHP;
+    private final int maxHP;
     private int mp;
-    private int maxMP;
+    private final int maxMP;
+    private boolean isDefending = false;
 
     public Player(String name, int hp, int mp, Weapon weapon, Armor armor) {
         this.name = name;
         this.hp = hp;
+        this.maxHP = hp;
         this.mp = mp;
-
+        this.maxMP = mp;
         this.weapon = weapon;
         this.armor = armor;
     }
 
     @Override
     public void attack(Entity target) {
+        System.out.println(ANSI.BLUE + name + ANSI.RESET + " attacks "
+                + ANSI.YELLOW + target.getName() + ANSI.RESET + " with "
+                + ANSI.CYAN + weapon.getName() + ANSI.RESET + "!");
         target.takeDamage(weapon.getDamage());
     }
 
     @Override
     public void defend() {
-        // TODO: (BONUS) IMPLEMENT A DEFENSE METHOD FOR SHIELDS
+        isDefending = true;
+        System.out.println(ANSI.BLUE + name + " raises " + armor.getName() +
+                " to defend! Damage will be reduced by 50% next attack." + ANSI.RESET);
     }
 
-    // TODO: (BONUS) UPDATE THE FORMULA OF TAKING DAMAGE
+    public boolean isDefending() {
+        return isDefending;
+    }
+
+    public void setDefending(boolean isDefending) {
+        this.isDefending = isDefending;
+    }
+
     @Override
     public void takeDamage(int damage) {
-        hp -= damage - armor.getDefense();
+        int reducedDamage = Math.max(damage - armor.getDefense(), 0);
+        if (isDefending) {
+            reducedDamage /= 2;
+            System.out.println(ANSI.BLUE + "Defense reduced damage by 50%!" + ANSI.RESET);
+        }
+
+        armor.reduceDurability(damage);
+
+        hp -= reducedDamage;
+        if (hp < 0) hp = 0;
+
+        System.out.println(ANSI.RED + name + " takes " + reducedDamage +
+                " damage! HP: " + hp + "/" + maxHP + ANSI.RESET);
+        System.out.println("Armor durability: " + armor.getDurability() + "/" +
+                armor.getMaxDurability());
+
+        if (armor.isBroke()) {
+            System.out.println(ANSI.RED + ANSI.BOLD + "WARNING: " + armor.getName() +
+                    " has broken! Defense is now 0!" + ANSI.RESET);
+        }
+
+        isDefending = false;
     }
 
     @Override
@@ -45,6 +80,7 @@ public abstract class Player {
         if (hp > maxHP) {
             hp = maxHP;
         }
+        System.out.println(name + " heals for " + health + " HP. Current HP: " + hp);
     }
 
     @Override
@@ -53,14 +89,17 @@ public abstract class Player {
         if (mp > maxMP) {
             mp = maxMP;
         }
+        System.out.println(name + " restores " + mana + " MP. Current MP: " + mp);
     }
 
 
+    @Override
     public String getName() {
         return name;
     }
 
-    public int getHp() {
+    @Override
+    public int getCurrentHP() {
         return hp;
     }
 
@@ -69,7 +108,8 @@ public abstract class Player {
         return maxHP;
     }
 
-    public int getMp() {
+    @Override
+    public int getCurrentMP() {
         return mp;
     }
 
@@ -84,6 +124,21 @@ public abstract class Player {
 
     public Armor getArmor() {
         return armor;
+    }
+
+    public void setWeapon(Weapon newWeapon) {
+        this.weapon = newWeapon;
+        System.out.println(name + " equips " + newWeapon.getName() + "!");
+    }
+
+    public void setArmor(Armor newArmor) {
+        this.armor = newArmor;
+        System.out.println(name + " equips " + newArmor.getName() + "!");
+    }
+
+    @Override
+    public boolean isAlive() {
+        return hp > 0;
     }
 
 }

@@ -1,31 +1,35 @@
 package org.project.object.armors;
 
-// TODO: UPDATE IMPLEMENTATION
-public abstract class Armor {
-    private int defense;
-    private int maxDefense;
-    private int durability;
-    private int maxDurability;
+import org.project.entity.Entity;
 
+public abstract class Armor {
+    private final String name;
+    private int defense;
+    private int durability;
+    private final int maxDurability;
     private boolean isBroke;
 
-    public Armor(int defense, int durability) {
+    public Armor(String name, int defense, int durability) {
+        this.name = name;
         this.defense = defense;
+        this.maxDurability = durability;
         this.durability = durability;
+        this.isBroke = false;
     }
 
     public void checkBreak() {
-        if (durability <= 0) {
-            isBroke = true;
+        if (isBroke()) {
             defense = 0;
         }
     }
 
-    // TODO: (BONUS) UPDATE THE REPAIR METHOD
-    public void repair() {
-        isBroke = false;
-        defense = maxDefense;
-        durability = maxDurability;
+    // Reduced armor durability after taking damage.
+    public void reduceDurability(int amount) {
+        durability -= amount;
+        if (durability < 0) {
+            durability = 0;
+        }
+        checkBreak();
     }
 
     public int getDefense() {
@@ -36,7 +40,13 @@ public abstract class Armor {
         return durability;
     }
 
+    public abstract int getMaxDurability();
+
     public boolean isBroke() {
-        return isBroke;
+        return durability <= 0;
+    }
+
+    public String getName(){
+        return name;
     }
 }

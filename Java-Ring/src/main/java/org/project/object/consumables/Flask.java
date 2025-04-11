@@ -2,15 +2,24 @@ package org.project.object.consumables;
 
 import org.project.entity.Entity;
 
-// TODO: UPDATE IMPLEMENTATION
-public class Flask {
-    /*
-    THIS IS AN EXAMPLE OF A CONSUMABLE DESIGN.
-    */
+public class Flask extends Consumable {
+    private final int healAmount;
 
-    // TODO: (BONUS) UPDATE USE METHOD
+    public Flask(String name, String description, int healAmount, int quantity) {
+        super(name, description, quantity);
+        this.healAmount = healAmount;
+    }
+
     @Override
-    public void use(Entity target) {
-        target.heal(target.getMaxHP() / 10);
+    public void applyEffect(Entity target) {
+        int healValue = Math.max(target.getMaxHP() * healAmount / 100, 1); // min: 1
+        target.heal(healValue);
+        System.out.println(target.getName() + " used " + getName() + " and restored " + healValue + " HP. " +
+                "Remaining: " + getQuantity());
+    }
+
+    @Override
+    public String toString() {
+        return getName() + " (" + getDescription() + ") - Restores " + healAmount + "% HP - Remaining: " + getQuantity();
     }
 }
